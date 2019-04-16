@@ -1,0 +1,34 @@
+version: '3'
+services:
+  app: &app
+    build: .
+    environment:
+      - PYTHONPATH=/usr/src/app
+    volumes:
+      - .:/usr/src/app
+
+  format:
+    <<: *app
+    command: black --target-version py37 nono
+    depends_on: []
+
+  style:
+    <<: *app
+    command: black --target-version py37 --check nono
+    depends_on: []
+
+  complexity:
+    <<: *app
+    command: xenon --ignore "tests" --max-absolute A --max-modules A --max-average A .
+    working_dir: /usr/src/app/nono
+    depends_on: []
+
+  test:
+    <<: *app
+    command: pytest -s nono
+    depends_on: []
+
+  security-sast:
+    <<: *app
+    command: bandit -x aemon/templates -r aemon
+    depends_on: []
