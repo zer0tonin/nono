@@ -15,7 +15,10 @@ async def on_ready():
 
 async def delete_last_messages(ctx, limit):
     async for message in ctx.channel.history(limit=limit + 1):
-        if message.author == ctx.message.author and message.content == ctx.message.content:
+        if (
+            message.author == ctx.message.author
+            and message.content == ctx.message.content
+        ):
             continue
         logger.info("Deleting message {0.content}".format(message))
         await message.delete()
@@ -23,6 +26,6 @@ async def delete_last_messages(ctx, limit):
 
 @client.command(name="purge")
 async def purge(ctx, *args):
-    message = asyncio.create_task(ctx.send("E X T E R M I N A T U S"))
-    deletion = asyncio.create_task(delete_last_messages(ctx, int(args[0])))
-    await asyncio.gather(message, deletion)
+    await asyncio.gather(
+        ctx.send("E X T E R M I N A T U S"), delete_last_messages(ctx, int(args[0]))
+    )
