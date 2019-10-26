@@ -6,6 +6,8 @@ services:
       - PYTHONPATH=/usr/src/app
     volumes:
       - .:/usr/src/app
+    networks:
+      - ns
 
   format:
     <<: *app
@@ -30,5 +32,10 @@ services:
 
   security-sast:
     <<: *app
-    command: bandit -x aemon/templates -r aemon
+    command: bandit -r nono -x test
     depends_on: []
+
+networks:
+  ns:
+    external:
+      name: my-network
