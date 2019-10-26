@@ -36,3 +36,8 @@ test:
 .PHONY: security-sast
 security-sast:
 	bandit -r nono -x test
+
+
+.PHONY: type
+type:
+	mypy nono --ignore-missing-import

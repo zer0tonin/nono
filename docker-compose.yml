@@ -35,6 +35,11 @@ services:
     command: bandit -r nono -x test
     depends_on: []
 
+  type:
+    <<: *app
+    command: mypy nono --ignore-missing-import
+    depends_on: []
+
 networks:
   ns:
     external:
