@@ -15,29 +15,29 @@ down:
 
 .PHONY: format
 format:
-	$(COMPOSE) build format
-	$(COMPOSE) run format
+	black --target-version py37 nono
 
 
 .PHONY: style
 style:
-	$(COMPOSE) build style
-	$(COMPOSE) run style
+	black --target-version py37 --check nono
 
 
 .PHONY: complexity
 complexity:
-	$(COMPOSE) build complexity
-	$(COMPOSE) run complexity
+	xenon --ignore "tests" --max-absolute A --max-modules A --max-average A nono
 
 
 .PHONY: test
 test:
-	$(COMPOSE) build test
-	$(COMPOSE) run test
+	pytest -s nono
 
 
 .PHONY: security-sast
 security-sast:
-	$(COMPOSE) build security-sast
-	$(COMPOSE) run security-sast
+	bandit -r nono -x test
+
+
+.PHONY: type
+type:
+	mypy nono --ignore-missing-import

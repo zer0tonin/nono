@@ -1,7 +1,7 @@
 import logging
 import yaml
 
-from nono.client import client
+from nono.discord.client import client
 
 logger = logging.getLogger(__name__)
 

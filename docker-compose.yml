@@ -6,6 +6,8 @@ services:
       - PYTHONPATH=/usr/src/app
     volumes:
       - .:/usr/src/app
+    networks:
+      - ns
 
   format:
     <<: *app
@@ -19,7 +21,7 @@ services:
 
   complexity:
     <<: *app
-    command: xenon --ignore "tests" --max-absolute A --max-modules A --max-average A .
+    command: xenon --ignore "tests" --max-absolute A --max-modules A --max-average A nono
     working_dir: /usr/src/app/nono
     depends_on: []
 
@@ -30,5 +32,15 @@ services:
 
   security-sast:
     <<: *app
-    command: bandit -x aemon/templates -r aemon
+    command: bandit -r nono -x test
     depends_on: []
+
+  type:
+    <<: *app
+    command: mypy nono --ignore-missing-import
+    depends_on: []
+
+networks:
+  ns:
+    external:
+      name: my-network
