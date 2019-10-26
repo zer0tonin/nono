@@ -21,7 +21,7 @@ services:
 
   complexity:
     <<: *app
-    command: xenon --ignore "tests" --max-absolute A --max-modules A --max-average A .
+    command: xenon --ignore "tests" --max-absolute A --max-modules A --max-average A nono
     working_dir: /usr/src/app/nono
     depends_on: []
 

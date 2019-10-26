@@ -25,7 +25,7 @@ style:
 
 .PHONY: complexity
 complexity:
-	xenon --ignore "tests" --max-absolute A --max-modules A --max-average A .
+	xenon --ignore "tests" --max-absolute A --max-modules A --max-average A nono
 
 
 .PHONY: test
