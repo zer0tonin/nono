@@ -1,17 +1,11 @@
 import asyncio
+
+from unittest.mock import Mock
+
 import pytest
 
 import nono.domain.interfaces as interfaces
 from nono.domain.purge import delete_last_messages
-
-
-class UserMock(interfaces.User):
-    def __init__(self, ident):
-        self._id = ident
-
-    @property
-    def id(self):
-        return self._id
 
 
 class MessageMock(interfaces.Message):
@@ -49,22 +43,25 @@ class ChannelMock(interfaces.Channel):
 
 @pytest.mark.asyncio
 async def test_purge():
-    admin = UserMock(1)
-    legit = UserMock(2)
-    spammer = UserMock(3)
-    trigger_message = MessageMock(admin, "!purge 3")
+    admin = Mock(spec=interfaces.User)
+    admin.id.return_value = 1
+    legit = Mock(spec=interfaces.User)
+    legit.id.return_value = 2
+    spammer = Mock(spec=interfaces.User)
+    spammer.id.return_value = 3
+
     messages = [
         MessageMock(legit, "hello"),
         MessageMock(spammer, "SPAM"),
         MessageMock(spammer, "SPAM"),
         MessageMock(spammer, "SPAM"),
-        trigger_message,
+        MessageMock(admin, "!purge 3"),
     ]
     channel = ChannelMock(messages)
-    await delete_last_messages(channel, trigger_message, 3)
+    await delete_last_messages(channel, messages[-1], 3)
 
     for message in channel.messages:
-        if message.author.id == 3:
+        if message.author.id() == 3:
             assert message.deleted
         else:
             assert not message.deleted
