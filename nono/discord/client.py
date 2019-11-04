@@ -1,22 +1,24 @@
 import logging
 
-from discord.ext.commands import Bot
+from discord.ext.commands import Cog, command
 
 from nono.discord.register_interfaces import register_interfaces
 from nono.domain.purge import delete_last_messages
 
+
 logger = logging.getLogger(__name__)
 
 register_interfaces()
-client = Bot(command_prefix="!")  # pylint: disable=invalid-name
 
+class Nono(Cog):
+    def __init__(self, bot):
+        self.bot = bot
 
-@client.event
-async def on_ready():
-    logger.info("We have logged in as {0.user}".format(client))
+    @Cog.listener()
+    async def on_ready(self):
+        logger.info("We have logged in as {0.user}".format(self.bot))
 
-
-@client.command(name="purge")
-async def purge(ctx, *args):
-    deleted = await delete_last_messages(ctx.channel, ctx.message, int(args[0]))
-    await ctx.send("Deleted {0} messages".format(deleted))
+    @command(name="purge")
+    async def purge(self, ctx, *args):
+        deleted = await delete_last_messages(ctx.channel, ctx.message, int(args[0]))
+        await ctx.send("Deleted {0} messages".format(deleted))
